@@ -61,7 +61,7 @@ class Pellet {
 
 
 const boundaries = [];
-const pellet=[];
+const pellets=[];
 const player = new Player({
   position: {
     x: Boundary.width + Boundary.width / 2,
@@ -276,6 +276,16 @@ map.forEach((row, i) => {
                           image : createImage('./img/pipeCross.png')
                         })
                       )
+                      case '.':
+                        pellets.push(
+                         new Pellet({
+                           position: {
+                             x: Boundary.width * j + Boundary.width/2,
+                             y: Boundary.height * i + Boundary.height/2
+                           }
+                         })
+                       )
+                         break;
                       
                       
                       
@@ -295,6 +305,18 @@ circle.position.y + circle.radius + circle.velocity.y >= rectangle.position.y
 function animate() {
   requestAnimationFrame(animate)
   c.clearRect(0,0,canvas.width,canvas.height)
+
+  
+  for(let i=pellets.length-1 ; 0<i ; i--){
+    const Pellet =  pellets[i]
+    Pellet.draw()
+    if(Math.hypot(Pellet.position.x-player.position.x , Pellet.position.y-player.position.y)
+    < player.radius+Pellet.radius){
+    pellets.splice(i,1)
+    score += 10 
+    scoreEl.innerHTML = score
+  }
+  }
   boundaries.forEach(boundary => {
     boundary.draw()
 
@@ -310,8 +332,8 @@ function animate() {
   });
 
   player.update()
-  player.velocity.y = 0
-  player.velocity.x = 0
+  // player.velocity.y = 0
+  // player.velocity.x = 0
   if (keys.w.pressed && lastkey === 'w') {
    for(let i=0 ; i<=boundaries.length ;i++){
     const boundary = boundaries[i]
