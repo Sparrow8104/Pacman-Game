@@ -44,8 +44,24 @@ class Player {
   }
 }
 
+class Pellet {
+  constructor({ position }) {
+    this.position = position
+    this.radius = 4
+  }
+  draw() {
+    c.beginPath()
+    c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2)
+    c.fillStyle = 'orange'
+    c.fill()
+    c.closePath()
+  }
+}
+
+
 
 const boundaries = [];
+const pellet=[];
 const player = new Player({
   position: {
     x: Boundary.width + Boundary.width / 2,
@@ -73,15 +89,22 @@ const keys = {
 
 let lastkey = ''
 const map = [
-  ['1', '-', '-', '-', '-', '-', '2'],
-  ['|', ' ', ' ', ' ', ' ', ' ', '|'],
-  ['|', ' ', '-', ' ', '-', ' ', '|'],
-  ['|', ' ', ' ', ' ', ' ', ' ', '|'],
-  ['|', ' ', ' ', '-', ' ', ' ', '|'],
-  ['|', ' ', ' ', ' ', ' ', ' ', '|'],
-  ['|', ' ', '-', ' ', '-', ' ', '|'],
-  ['|', ' ', ' ', ' ', ' ', ' ', '|'],
-  ['4', '-', '-', '-', '-', '-', '3'],
+['1', '-', '-', '-', '-', '-', '-', '-', '-', '-', '2'],
+['|', ' ', '.', '.', '.', '.', '.', '.', '.', '.', '|'],
+['|', '.', 'A', ' ', 'L', '-', 'R', ' ', 'A', '.', '|'],
+['|', '.', '.', '.', '.', '.', '.', '.', '.', '.', '|'],
+['|', '.', 'T', '.', '.', 'A', '.', '.', 'T', '.', '|'],
+['|', '.', '|', 'R', '.', '.', '.', 'L', '|', '.', '|'],
+['|', '.', 'B', '.', '.', 'T', '.', '.', 'B', '.', '|'],
+['|', '.', '.', '.', 'L', '*', 'R', '.', '.', '.', '|'],
+['|', '.', 'T', '.', '.', 'B', '.', '.', 'T', '.', '|'],
+['|', '.', 'T', '.', '.', '.', '.', '.', 'T', '.', '|'],
+['|', '.', 'B', '.', 'T', '.', 'T', '.', 'B', '.', '|'],
+['|', '.', 'B', '.', '4', '-', '3', '.', 'B', '.', '|'],
+['|', '.', '.', '.', '.', '.', '.', '.', '.', '.', '|'],
+['|', '.', 'A', ' ', 'L', '-', 'R', '.', 'A', '.', '|'],
+['|', '.', '.', '.', '.', '.', '.', '.', '.', '.', '|'],
+['4', '-', '-', '-', '-', '-', '-', '-', '-', '-', '3'],
 ]
 function createImage(src){
   const image=new Image()
@@ -99,60 +122,162 @@ map.forEach((row, i) => {
             x: Boundary.width * j,
             y: Boundary.height * i
           },
-          image:createImage('./img/pipeHorizontal.png')
+          image : createImage('./img/pipeHorizontal.png') 
         })
       )
         break;
-        case '|': boundaries.push(
+      case '|': boundaries.push(
+        new Boundary({
+          position: {
+            x: Boundary.width * j,
+            y: Boundary.height * i
+          },
+          image : createImage('./img/pipeVertical.png')
+        })
+      )
+        break;
+      case '1': boundaries.push(
+        new Boundary({
+          position: {
+            x: Boundary.width * j,
+            y: Boundary.height * i
+          },
+          image : createImage('./img/pipeCorner1.png')
+        })
+      )
+        break;
+      case '2': boundaries.push(
+        new Boundary({
+          position: {
+            x: Boundary.width * j,
+            y: Boundary.height * i
+          },
+          image : createImage('./img/pipeCorner2.png')
+        })
+      )
+        break;
+      case '3': boundaries.push(
+        new Boundary({
+          position: {
+            x: Boundary.width * j,
+            y: Boundary.height * i
+          },
+          image : createImage('./img/pipeCorner3.png')
+        })
+      )
+        break;
+        case '4': boundaries.push(
           new Boundary({
             position: {
               x: Boundary.width * j,
               y: Boundary.height * i
             },
-            image:createImage('./img/pipeVertical.png')
+            image : createImage('./img/pipeCorner4.png')
           })
         )
           break;
-          case '1': boundaries.push(
-            new Boundary({
-              position: {
-                x: Boundary.width * j,
-                y: Boundary.height * i
-              },
-              image:createImage('./img/pipeCorner1.png')
-            })
-          )
-            break;
-            case '2': boundaries.push(
-              new Boundary({
-                position: {
-                  x: Boundary.width * j,
-                  y: Boundary.height * i
-                },
-                image:createImage('./img/pipeCorner2.png')
-              })
-            )
-              break;
-              case '3': boundaries.push(
-                new Boundary({
-                  position: {
-                    x: Boundary.width * j,
-                    y: Boundary.height * i
-                  },
-                  image:createImage('./img/pipeCorner3.png')
-                })
-              )
-                break;
-                case '4': boundaries.push(
-                  new Boundary({
-                    position: {
-                      x: Boundary.width * j,
-                      y: Boundary.height * i
-                    },
-                    image:createImage('./img/pipeCorner4.png')
-                  })
-                )
-                  break;
+        case 'A': boundaries.push(
+          new Boundary({
+            position: {
+              x: Boundary.width * j,
+              y: Boundary.height * i
+            },
+            image : createImage('./img/block.png')
+          })
+        )
+          break;
+        case 'R': boundaries.push(
+          new Boundary({
+            position: {
+              x: Boundary.width * j,
+              y: Boundary.height * i
+            },
+            image : createImage('./img/capRight.png')
+          })
+        )
+          break;
+        case 'T': boundaries.push(
+          new Boundary({
+            position: {
+              x: Boundary.width * j,
+              y: Boundary.height * i
+            },
+            image : createImage('./img/capTop.png')
+          })
+        )
+          break;
+        case 'L': boundaries.push(
+          new Boundary({
+            position: {
+              x: Boundary.width * j,
+              y: Boundary.height * i
+            },
+            image : createImage('./img/capLeft.png')
+          })
+        )
+          break;
+        case 'B': boundaries.push(
+          new Boundary({
+            position: {
+              x: Boundary.width * j,
+              y: Boundary.height * i
+            },
+            image : createImage('./img/capBottom.png')
+          })
+        )
+          break;
+        case 't': boundaries.push(
+          new Boundary({
+            position: {
+              x: Boundary.width * j,
+              y: Boundary.height * i
+            },
+            image : createImage('./img/pipeConnectorTop.png')
+          })
+        )
+          break;
+        case 'b': boundaries.push(
+          new Boundary({
+            position: {
+              x: Boundary.width * j,
+              y: Boundary.height * i
+            },
+            image : createImage('./img/pipeConnectorBottom.png')
+          })
+        )
+          break;
+        case 'r': boundaries.push(
+          new Boundary({
+            position: {
+              x: Boundary.width * j,
+              y: Boundary.height * i
+            },
+            image : createImage('./img/pipeConnectorRight.png')
+          })
+        )
+          break;
+        case 'l': boundaries.push(
+          new Boundary({
+            position: {
+              x: Boundary.width * j,
+              y: Boundary.height * i
+            },
+            image : createImage('./img/pipeConnectorLeft.png')
+          })
+        )
+          break;
+                      case '*': boundaries.push(
+                        new Boundary({
+                          position: {
+                            x: Boundary.width * j,
+                            y: Boundary.height * i
+                          },
+                          image : createImage('./img/pipeCross.png')
+                        })
+                      )
+                      
+                      
+                  
     }
   })
 })
