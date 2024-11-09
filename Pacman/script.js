@@ -266,6 +266,7 @@ map.forEach((row, i) => {
           })
         )
           break;
+
                       case '*': boundaries.push(
                         new Boundary({
                           position: {
@@ -275,6 +276,7 @@ map.forEach((row, i) => {
                           image : createImage('./img/pipeCross.png')
                         })
                       )
+                      
                       
                       
                   
