@@ -43,6 +43,27 @@ class Player {
 
   }
 }
+class Ghost {
+  constructor({ position, velocity,color='red' }) {
+    this.position = position
+    this.velocity = velocity
+    this.radius = 15
+    this.color=color
+  }
+  draw() {
+    c.beginPath()
+    c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2)
+    c.fillStyle = this.color
+    c.fill()
+    c.closePath()
+  }
+  update() {
+    this.draw()
+    this.position.x += this.velocity.x
+    this.position.y += this.velocity.y
+
+  }
+}
 
 class Pellet {
   constructor({ position }) {
@@ -59,9 +80,19 @@ class Pellet {
 }
 
 
-
-const boundaries = [];
 const pellets=[];
+const boundaries = [];
+const ghosts=[
+  new Ghost({
+    position:{
+      x:0,
+      y:0
+    },
+    velocity:{
+      x:0,
+      y:0    }
+  })
+]
 const player = new Player({
   position: {
     x: Boundary.width + Boundary.width / 2,
@@ -332,6 +363,9 @@ function animate() {
   });
 
   player.update()
+  ghosts.forEach(ghost =>{
+    ghost.update()
+  })
   // player.velocity.y = 0
   // player.velocity.x = 0
   if (keys.w.pressed && lastkey === 'w') {
